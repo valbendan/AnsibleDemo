@@ -1,0 +1,14 @@
+---
+
+- hosts: hello
+  tasks:
+    - name: hello world {{ ansible }} this is very cool :)
+      when: hello == "good"
+
+    - name: template demo
+      ansible.builtin.template: |
+        {% if hello %}
+          {{ hello }}
+          {{ world }}
+          {{ cool }}
+        {% endif %}
