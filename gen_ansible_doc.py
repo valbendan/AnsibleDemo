@@ -13,6 +13,7 @@ def main(out_dir: str = typer.Argument(..., help="输出目录")):
     out = json.loads(process.stdout)
 
     for module in out.keys():
+        typer.secho(f"<<< get {module=} doc", fg="green")
         process = subprocess.run(["ansible-doc", module, "-j"], capture_output=True)
         doc = json.loads(process.stdout)
         with open(os.path.join(out_dir, f"{module}.json"), "w") as fp:
