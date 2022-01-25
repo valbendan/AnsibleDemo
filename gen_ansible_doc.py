@@ -2,7 +2,7 @@ import json
 import os.path
 import subprocess
 from json import JSONDecodeError
-from typing import List, Dict, Union
+from typing import List, Dict, Union, Optional
 
 import typer
 from pydantic import Field, BaseModel
@@ -13,7 +13,7 @@ class AnsibleModuleOption(BaseModel):
     description: Union[str, List[str]] = Field(None)
     typ_: str = Field(None, alias="type")
     required: bool = Field(False)
-    default: Union[str, int, bool, list, dict, None] = Field(None)
+    default: Optional[Union[str, int, bool, list, dict]] = Field(None)
     choices: List[Union[str, int, None]] = Field(None)
     elements: str = Field(None)
     version_added: str = Field(None)
@@ -27,7 +27,9 @@ class AnsibleModuleOption(BaseModel):
         else:
             ret["default"] = str(ret["default"])
 
-        ret["choices"] = [str(ch) for ch in filter(bool, ret["choices"])]
+        if ret["choices"] is not None:
+            ret["choices"] = [str(ch) for ch in filter(bool, ret["choices"])]
+
         if isinstance(ret["description"], list):
             ret["description"] = "\n".join(ret["description"])
         return ret
