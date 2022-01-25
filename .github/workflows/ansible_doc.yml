@@ -30,11 +30,22 @@ jobs:
         with:
           python-version: 3.9
 
-      # Runs a single command using the runners shell
-      - name: install ansible
-        run: pip install ansible
+      - name: install poetry
+        run: pip install poetry
 
-      # Runs a set of commands using the runners shell
+      - name: install deps
+        run: poetry update
+
       - name: Generate Ansible Doc
         run: |
-          python gen_ansible_doc.py
+          mkdir docs
+          poetry run python gen_ansible_doc.py
+
+      - name: Gen zip files
+        run: |
+          zip -r ansible_doc.zip docs
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: ansible_doc.zip
+          path: ansible_doc.zip
