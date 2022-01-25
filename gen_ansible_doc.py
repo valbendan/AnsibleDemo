@@ -1,8 +1,30 @@
 import json
 import os.path
 import subprocess
+from typing import List, Dict
 
 import typer
+
+
+def gen_module_doc(module: str) -> Dict[str, dict]:
+    process = subprocess.run(["ansible-doc", module, "-j"], capture_output=True)
+    return json.loads(process.stdout)
+
+
+def group_to_collections(all_modules: List[str]) -> Dict[str, List[str]]:
+    """
+    使用 Ansible Collections 对 module 进行分组
+    :param all_modules:
+    :return: collection_name -> collections moduls
+    """
+    group = dict()
+    for module in all_modules:
+        collection_name, = module.rsplit(".", 1)
+        if collection_name in group:
+            group[collection_name].append(module)
+        else:
+            group[collection_name] = [module]
+    return group
 
 
 def main(out_dir: str = typer.Argument(..., help="输出目录")):

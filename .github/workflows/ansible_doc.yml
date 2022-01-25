@@ -38,7 +38,7 @@ jobs:
       - name: Generate Ansible Doc
         run: |
           mkdir docs
-          poetry run python gen_ansible_doc.py
+          poetry run python gen_ansible_doc.py docs
 
       - name: Gen zip files
         run: |
