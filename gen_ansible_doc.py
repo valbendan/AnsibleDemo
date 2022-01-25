@@ -36,7 +36,7 @@ class AnsibleModuleDoc(BaseModel):
     description: Union[str, List[str]] = Field([])
     has_action: bool = Field(False)
     module: str = Field(...)
-    notes: Union[str, List[str]] = Field([])
+    notes: Union[str, List[str]] = Field(None)
     options: Dict[str, AnsibleModuleOption] = Field(dict())
     requirements: List[str] = Field([])
     short_description: str = Field("")
@@ -46,6 +46,8 @@ class AnsibleModuleDoc(BaseModel):
         data = super().dict(**kwargs)
         if isinstance(data["description"], str):
             data["description"] = [data["description"]]
+        if data["notes"] is None:
+            data["notes"] = []
         if isinstance(data["notes"], str):
             data["notes"] = [data["notes"]]
         if isinstance(data["author"], str):
