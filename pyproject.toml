@@ -9,6 +9,8 @@ python = "^3.9"
 
 ansible = ">=5.2,<6.0"
 
+pydantic = ">=1.9,<2.0"
+
 [tool.poetry.dev-dependencies]
 
 typer = ">=0.4,<1.0"
