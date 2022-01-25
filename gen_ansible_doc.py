@@ -83,7 +83,7 @@ def gen_module_doc(module: str) -> Dict[str, dict]:
         assert isinstance(data, dict)
         name = list(data.keys())[0]
         value = list(data.values())[0]
-        return {name: AnsibleModuleDocumentation(**value).dict()}
+        return {name: AnsibleModuleDocumentation(**value).dict(by_alias=True)}
     except JSONDecodeError as e:
         typer.secho(f"<<< {module=} json decode failed: {e}", fg="red")
         return dict()
