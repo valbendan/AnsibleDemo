@@ -37,5 +37,5 @@ jobs:
 
       - uses: actions/upload-artifact@v2
         with:
-          name: ansible_doc.zip
+          name: ansible_doc
           path: ansible_doc.zip
