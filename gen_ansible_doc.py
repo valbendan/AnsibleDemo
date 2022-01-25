@@ -13,7 +13,7 @@ class AnsibleModuleOption(BaseModel):
     description: Union[str, List[str]] = Field(None)
     typ_: str = Field(None, alias="type")
     required: bool = Field(False)
-    choices: List[Union[str, int, None]] = Field(None)
+    choices: List[Union[str, int, None]] = Field([])
     elements: str = Field(None)
     version_added: str = Field(None)
     suboptions: Dict[str, "AnsibleModuleOption"] = Field(dict())
