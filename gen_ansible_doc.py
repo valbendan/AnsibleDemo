@@ -2,17 +2,79 @@ import json
 import os.path
 import subprocess
 from json import JSONDecodeError
-from typing import List, Dict
+from typing import List, Dict, Union
 
 import typer
+from pydantic import Field, BaseModel
+
+
+class AnsibleModuleOption(BaseModel):
+    aliases: List[str] = Field([])
+    description: List[str] = Field([])
+    typ_: str = Field("str", alias="type")
+    required: bool = Field(False)
+    default: Union[str, int, bool] = Field("")
+    choices: List[Union[str, int]] = Field([])
+    elements: str = Field("")
+    version_added: str = Field("")
+    suboptions: Dict[str, "AnsibleModuleOption"] = Field(dict())
+
+
+class AnsibleModuleDoc(BaseModel):
+    author: str = Field(...)
+    collection: str = Field(...)
+    description: Union[str, List[str]] = Field([])
+    has_action: bool = Field(False)
+    module: str = Field(...)
+    notes: Union[str, List[str]] = Field([])
+    options: Dict[str, AnsibleModuleOption] = Field(dict())
+    requirements: List[str] = Field([])
+    short_description: str = Field("")
+    version_added: str = Field("")
+
+    def dict(self, **kwargs):
+        data = super().dict(**kwargs)
+        if isinstance(data["description"], str):
+            data["description"] = [data["description"]]
+        if isinstance(data["notes"], str):
+            data["notes"] = [data["notes"]]
+        return data
+
+
+class AnsibleModuleReturn(BaseModel):
+    description: str = Field("")
+    returned: str = Field("")
+    typ_: str = Field("", alias="type")
+    elements: str = Field("")
+    sample: str = Field("")
+    version_added: str = Field("")
+    contains: Dict[str, "AnsibleModuleReturn"] = Field(dict())
+
+
+class AnsibleModuleDocumentation(BaseModel):
+    doc: AnsibleModuleDoc = Field(...)
+    examples: str = Field("")
+    ret: Dict[str, AnsibleModuleReturn] = Field(dict())
 
 
 def gen_module_doc(module: str) -> Dict[str, dict]:
+    """
+    We should normalize the output of Asnible Module documentation
+
+    Since Java/Kotlin process dynamic type is hard
+    """
     process = subprocess.run(["ansible-doc", module, "-j"], capture_output=True)
     try:
-        return json.loads(process.stdout)
+        data = json.loads(process.stdout)
+        assert isinstance(data, dict)
+        name = list(data.keys())[0]
+        value = list(data.values())[0]
+        return {name: AnsibleModuleDocumentation(**value).dict()}
     except JSONDecodeError as e:
-        typer.secho(f"<<< {module=} failed: {e}", fg="red")
+        typer.secho(f"<<< {module=} json decode failed: {e}", fg="red")
+        return dict()
+    except Exception as e:
+        typer.secho(f"<<< {module=} pydantic ?? failed: {e}", fg="red")
         return dict()
 
 
@@ -27,7 +89,9 @@ def group_to_collections(all_modules: List[str]) -> Dict[str, List[str]]:
         try:
             collection_name, _ = module.rsplit(".", 1)
         except ValueError:
-            collection_name = 'global.stub'  # indeed, global is not exists, it's just a stub file
+            collection_name = (
+                "global.stub"  # indeed, global is not exists, it's just a stub file
+            )
 
         if collection_name in group:
             group[collection_name].append(module)
