@@ -31,7 +31,6 @@ class AnsibleModuleOption(BaseModel):
 
 
 class AnsibleModuleDoc(BaseModel):
-    author: Union[str, List[str]] = Field([])
     collection: str = Field(...)
     description: Union[str, List[str]] = Field([])
     has_action: bool = Field(False)
@@ -50,8 +49,6 @@ class AnsibleModuleDoc(BaseModel):
             data["notes"] = []
         if isinstance(data["notes"], str):
             data["notes"] = [data["notes"]]
-        if isinstance(data["author"], str):
-            data["author"] = [data["author"]]
         return data
 
 
