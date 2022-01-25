@@ -21,9 +21,12 @@ class AnsibleModuleOption(BaseModel):
 
     def dict(self, **kwargs):
         ret = super().dict(**kwargs)
-        if ret["default"] is None:
-            ret["default"] = ""
-        ret["default"] = str(ret["default"])
+
+        if isinstance(ret["default"], (list, dict)) or ret["default"] is None:
+            ret["default"] = None
+        else:
+            ret["default"] = str(ret["default"])
+
         ret["choices"] = [str(ch) for ch in filter(bool, ret["choices"])]
         if isinstance(ret["description"], list):
             ret["description"] = "\n".join(ret["description"])
