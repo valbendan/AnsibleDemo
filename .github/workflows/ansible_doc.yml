@@ -1,6 +1,6 @@
 name: Generate Ansible Moudle Documentation
 
-# version: v2
+# version: v3
 
 on:
   push:
