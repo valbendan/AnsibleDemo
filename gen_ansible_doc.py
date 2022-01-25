@@ -1,6 +1,7 @@
 import json
 import os.path
 import subprocess
+from json import JSONDecodeError
 from typing import List, Dict
 
 import typer
@@ -8,7 +9,11 @@ import typer
 
 def gen_module_doc(module: str) -> Dict[str, dict]:
     process = subprocess.run(["ansible-doc", module, "-j"], capture_output=True)
-    return json.loads(process.stdout)
+    try:
+        return json.loads(process.stdout)
+    except JSONDecodeError as e:
+        typer.secho(f"<<< {module=} failed: {e}", fg="red")
+        return dict()
 
 
 def group_to_collections(all_modules: List[str]) -> Dict[str, List[str]]:
