@@ -13,15 +13,23 @@ class AnsibleModuleOption(BaseModel):
     description: List[str] = Field([])
     typ_: str = Field("str", alias="type")
     required: bool = Field(False)
-    default: Union[str, int, bool] = Field("")
+    default: Union[str, int, bool] = Field(None)
     choices: List[Union[str, int]] = Field([])
     elements: str = Field("")
     version_added: str = Field("")
     suboptions: Dict[str, "AnsibleModuleOption"] = Field(dict())
 
+    def dict(self, **kwargs):
+        ret = super().dict(**kwargs)
+        if ret["default"] is None:
+            ret["default"] = ""
+        ret["default"] = str(ret["default"])
+        ret["choices"] = [str(ch) for ch in ret["choices"]]
+        return ret
+
 
 class AnsibleModuleDoc(BaseModel):
-    author: str = Field(...)
+    author: Union[str, List[str]] = Field([])
     collection: str = Field(...)
     description: Union[str, List[str]] = Field([])
     has_action: bool = Field(False)
@@ -38,6 +46,8 @@ class AnsibleModuleDoc(BaseModel):
             data["description"] = [data["description"]]
         if isinstance(data["notes"], str):
             data["notes"] = [data["notes"]]
+        if isinstance(data["author"], str):
+            data["author"] = [data["author"]]
         return data
 
 

@@ -12,3 +12,17 @@
           {{ world }}
           {{ cool }}
         {% endif %}
+
+
+
+    - name: hello
+      when: hello
+
+    - name: hello
+      action: hello
+      throttle: 3
+
+    - name: demo
+      block:
+        - name: hello world
+          task: hello
