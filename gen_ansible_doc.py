@@ -19,7 +19,7 @@ def group_to_collections(all_modules: List[str]) -> Dict[str, List[str]]:
     """
     group = dict()
     for module in all_modules:
-        collection_name, = module.rsplit(".", 1)
+        collection_name, _ = module.rsplit(".", 1)
         if collection_name in group:
             group[collection_name].append(module)
         else:
@@ -30,6 +30,10 @@ def group_to_collections(all_modules: List[str]) -> Dict[str, List[str]]:
 def main(out_dir: str = typer.Argument(..., help="输出目录")):
     """
     获取 Ansible 所有模块的文档
+
+    按照 collections 分组存储到指定的目录中
+
+    使用 Github Action ansible_doc.yml 运行
     """
     process = subprocess.run(["ansible-doc", "-l", "-j"], capture_output=True)
     out = json.loads(process.stdout)
