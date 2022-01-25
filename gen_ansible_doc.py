@@ -11,9 +11,10 @@ from pydantic import Field, BaseModel
 class AnsibleModuleOption(BaseModel):
     aliases: List[str] = Field([])
     description: Union[str, List[str]] = Field(None)
+    default: Union[str, int, bool, list, dict] = Field(None)
     typ_: str = Field(None, alias="type")
     required: bool = Field(False)
-    choices: List[Union[str, int, None]] = Field([])
+    choices: List[Union[str, int, None]] = Field(None)
     elements: str = Field(None)
     version_added: str = Field(None)
     suboptions: Dict[str, "AnsibleModuleOption"] = Field(dict())
@@ -21,10 +22,13 @@ class AnsibleModuleOption(BaseModel):
     def dict(self, **kwargs):
         ret = super().dict(**kwargs)
 
-        if ret["choices"] is not None:
+        if ret.get("choices", None) is not None:
             ret["choices"] = [str(ch) for ch in filter(bool, ret["choices"])]
 
-        if isinstance(ret["description"], list):
+        if ret.get("default", None) is not None:
+            ret["default"] = str(ret["default"])
+
+        if isinstance(ret.get("description", None), list):
             ret["description"] = "\n".join(ret["description"])
         return ret
 
@@ -40,9 +44,9 @@ class AnsibleModuleDoc(BaseModel):
 
     def dict(self, **kwargs):
         data = super().dict(**kwargs)
-        if isinstance(data["description"], list):
+        if isinstance(data.get("description", None), list):
             data["description"] = "\n".join(data["description"])
-        if isinstance(data["notes"], list):
+        if isinstance(data.get("notes", None), list):
             data["notes"] = "\n".join(data["notes"])
         return data
 
