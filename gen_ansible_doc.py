@@ -10,13 +10,13 @@ from pydantic import Field, BaseModel
 
 class AnsibleModuleOption(BaseModel):
     aliases: List[str] = Field([])
-    description: Union[str, List[str]] = Field([])
-    typ_: str = Field("str", alias="type")
+    description: Union[str, List[str]] = Field(None)
+    typ_: str = Field(None, alias="type")
     required: bool = Field(False)
     default: Union[str, int, bool, list, dict] = Field(None)
-    choices: List[Union[str, int, None]] = Field([])
-    elements: str = Field("")
-    version_added: str = Field("")
+    choices: List[Union[str, int, None]] = Field(None)
+    elements: str = Field(None)
+    version_added: str = Field(None)
     suboptions: Dict[str, "AnsibleModuleOption"] = Field(dict())
 
     def dict(self, **kwargs):
@@ -25,47 +25,43 @@ class AnsibleModuleOption(BaseModel):
             ret["default"] = ""
         ret["default"] = str(ret["default"])
         ret["choices"] = [str(ch) for ch in filter(bool, ret["choices"])]
-        if isinstance(ret["description"], str):
-            ret["description"] = [ret["description"]]
+        if isinstance(ret["description"], list):
+            ret["description"] = "\n".join(ret["description"])
         return ret
 
 
 class AnsibleModuleDoc(BaseModel):
-    collection: str = Field(...)
-    description: Union[str, List[str]] = Field([])
+    description: Union[str, List[str]] = Field(None)
     has_action: bool = Field(False)
-    module: str = Field(...)
     notes: Union[str, List[str]] = Field(None)
-    options: Dict[str, AnsibleModuleOption] = Field(dict())
-    requirements: List[str] = Field([])
-    short_description: str = Field("")
-    version_added: str = Field("")
+    options: Dict[str, AnsibleModuleOption] = Field(None)
+    requirements: List[str] = Field(None)
+    short_description: str = Field(None)
+    version_added: str = Field(None)
 
     def dict(self, **kwargs):
         data = super().dict(**kwargs)
-        if isinstance(data["description"], str):
-            data["description"] = [data["description"]]
-        if data["notes"] is None:
-            data["notes"] = []
-        if isinstance(data["notes"], str):
-            data["notes"] = [data["notes"]]
+        if isinstance(data["description"], list):
+            data["description"] = "\n".join(data["description"])
+        if isinstance(data["notes"], list):
+            data["notes"] = "\n".join(data["notes"])
         return data
 
 
 class AnsibleModuleReturn(BaseModel):
-    description: str = Field("")
-    returned: str = Field("")
-    typ_: str = Field("", alias="type")
-    elements: str = Field("")
-    sample: str = Field("")
-    version_added: str = Field("")
-    contains: Dict[str, "AnsibleModuleReturn"] = Field(dict())
+    description: str = Field(None)
+    returned: str = Field(None)
+    typ_: str = Field(None, alias="type")
+    elements: str = Field(None)
+    sample: str = Field(None)
+    version_added: str = Field(None)
+    contains: Dict[str, "AnsibleModuleReturn"] = Field(None)
 
 
 class AnsibleModuleDocumentation(BaseModel):
     doc: AnsibleModuleDoc = Field(...)
-    examples: str = Field("")
-    ret: Dict[str, AnsibleModuleReturn] = Field(dict())
+    examples: str = Field(None)
+    ret: Dict[str, AnsibleModuleReturn] = Field(None)
 
 
 def gen_module_doc(module: str) -> Dict[str, dict]:
@@ -80,7 +76,11 @@ def gen_module_doc(module: str) -> Dict[str, dict]:
         assert isinstance(data, dict)
         name = list(data.keys())[0]
         value = list(data.values())[0]
-        return {name: AnsibleModuleDocumentation(**value).dict(by_alias=True)}
+        return {
+            name: AnsibleModuleDocumentation(**value).dict(
+                by_alias=True, exclude_none=True
+            )
+        }
     except JSONDecodeError as e:
         typer.secho(f"<<< {module=} json decode failed: {e}", fg="red")
         return dict()
