@@ -14,7 +14,7 @@ class AnsibleModuleOption(BaseModel):
     typ_: str = Field("str", alias="type")
     required: bool = Field(False)
     default: Union[str, int, bool, list, dict] = Field(None)
-    choices: List[Union[str, int]] = Field([])
+    choices: List[Union[str, int, None]] = Field([])
     elements: str = Field("")
     version_added: str = Field("")
     suboptions: Dict[str, "AnsibleModuleOption"] = Field(dict())
@@ -24,7 +24,7 @@ class AnsibleModuleOption(BaseModel):
         if ret["default"] is None:
             ret["default"] = ""
         ret["default"] = str(ret["default"])
-        ret["choices"] = [str(ch) for ch in ret["choices"]]
+        ret["choices"] = [str(ch) for ch in filter(bool, ret["choices"])]
         if isinstance(ret["description"], str):
             ret["description"] = [ret["description"]]
         return ret
