@@ -34,12 +34,15 @@ def main(out_dir: str = typer.Argument(..., help="输出目录")):
     process = subprocess.run(["ansible-doc", "-l", "-j"], capture_output=True)
     out = json.loads(process.stdout)
 
-    for module in out.keys():
-        typer.secho(f"<<< get {module=} doc", fg="green")
-        process = subprocess.run(["ansible-doc", module, "-j"], capture_output=True)
-        doc = json.loads(process.stdout)
-        with open(os.path.join(out_dir, f"{module}.json"), "w") as fp:
-            json.dump(doc, fp, ensure_ascii=False, indent=2)
+    collection_modules = group_to_collections(out.keys())
+
+    for collection, modules in collection_modules.items():
+        data = dict()
+        for module in modules:
+            typer.secho(f"<<< get {module=} doc", fg="green")
+            data |= gen_module_doc(module)
+        with open(os.path.join(out_dir, f"{collection}.json"), "w") as fp:
+            json.dump(data, fp, ensure_ascii=False, indent=2)
 
 
 if __name__ == "__main__":
