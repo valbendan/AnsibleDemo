@@ -1,5 +1,7 @@
 name: Generate Ansible Moudle Documentation
 
+# version: v1
+
 on:
   push:
     paths:
