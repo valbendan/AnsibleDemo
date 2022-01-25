@@ -10,7 +10,7 @@ from pydantic import Field, BaseModel
 
 class AnsibleModuleOption(BaseModel):
     aliases: List[str] = Field([])
-    description: List[str] = Field([])
+    description: Union[str, List[str]] = Field([])
     typ_: str = Field("str", alias="type")
     required: bool = Field(False)
     default: Union[str, int, bool, list, dict] = Field(None)
@@ -25,6 +25,8 @@ class AnsibleModuleOption(BaseModel):
             ret["default"] = ""
         ret["default"] = str(ret["default"])
         ret["choices"] = [str(ch) for ch in ret["choices"]]
+        if isinstance(ret["description"], str):
+            ret["description"] = [ret["description"]]
         return ret
 
 
