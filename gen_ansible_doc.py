@@ -103,9 +103,7 @@ def group_to_collections(all_modules: List[str]) -> Dict[str, List[str]]:
         try:
             collection_name, _ = module.rsplit(".", 1)
         except ValueError:
-            collection_name = (
-                "global.stub"  # indeed, global is not exists, it's just a stub file
-            )
+            collection_name = "ansible.builtin"
 
         if collection_name in group:
             group[collection_name].append(module)
