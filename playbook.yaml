@@ -22,6 +22,14 @@
       action: hello
       throttle: 3
 
+    - name: good
+      ansible.builtin.yum_repository:
+        block: hello
+
+    - name: cool
+      ansible.builtin.git:
+        -
+
     - name: demo
       block:
         - name: hello world

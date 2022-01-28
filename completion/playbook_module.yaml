@@ -7,3 +7,8 @@
 
     - name: world
       action: an
+
+    - name: block demo
+      block:
+        - name: block demo
+          xxx
