@@ -12,3 +12,25 @@
           {{ world }}
           {{ cool }}
         {% endif %}
+
+
+    - name: hello
+      ansible.builtin.apt:
+        name: hello
+        default_release: hello
+        dpkg_options: hello
+        update_cache: demo
+
+    - name: hello
+      when: hello
+
+    - name: good
+      ansible.builtin.yum_repository:
+        block: hello
+
+    - name: goods
+      apt:
+        name: hello
+        allow_downgrade: true
+        allow_unauthenticated: true
+        

@@ -1,0 +1,6 @@
+- name: hello world {{ ansible }} this is very cool :)
+  ap
+
+
+- name: hello gg
+  action: a

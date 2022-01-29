@@ -1,0 +1,17 @@
+- name: hello world {{ ansible }} this is very cool :)
+  apt:
+    name
+
+- name: hello world {{ ansible }} this is very cool :)
+  apt:
+    name
+  when:
+    - hello world
+    - cool godl
+
+
+- name: hello block
+  block:
+    - name: apt demo
+      apt:
+        name

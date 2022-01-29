@@ -1,0 +1,10 @@
+- hosts: demo for auto completion for Ansible Module
+  tasks:
+    - name: hello world {{ ansible }} this is very cool :)
+      apt:
+        name
+
+    - name: hello world {{ ansible }} this is very cool :)
+      apt:
+        name: name
+        demo

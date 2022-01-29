@@ -1,4 +1,5 @@
 .idea
+docs
 db.sqlite3
 poetry.lock
 __pycache__

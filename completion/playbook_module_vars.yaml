@@ -1,0 +1,17 @@
+- hosts: demo for auto completion for Ansible Module
+  tasks:
+    - name: h1
+      action: apt
+      vars:
+        demo
+
+    - name: h2
+      action: apt
+      vars:
+        name: name
+        demo
+
+    - name: hello
+      qiyutech.sofware.wordpress:
+      vars:
+        name: demo
