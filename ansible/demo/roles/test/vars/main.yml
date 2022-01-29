@@ -1,2 +1,6 @@
 ---
 # vars file for test
+
+test_vars_hello: world
+
+test_vars_world: this is world
