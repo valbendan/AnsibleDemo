@@ -4,3 +4,8 @@
 test_vars_hello: world
 
 test_vars_world: this is world
+
+test_dict_value:
+  k1_this_is_very_long: this is a very long value too
+  k2_short: short value
+
