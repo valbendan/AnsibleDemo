@@ -4,5 +4,8 @@
       action: ansible.builtin.apt
 
     - name: debug
-      ansible.builtin.debug:
-        msg: hello
+      ansible.builtin.apt:
+        name:
+          - httpd
+        cache_valid_time: 20
+

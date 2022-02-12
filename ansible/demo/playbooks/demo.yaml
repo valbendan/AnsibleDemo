@@ -1,0 +1,13 @@
+- host: servers
+  tasks:
+    - name: cool
+      action: ansible.builtin.apt
+      when:
+        - ansible_bios_version == 'hello'
+        - ansible_bios_version == 'Suse' and ansible_all_ipv4_addresses | default('', false)
+      failed_when:
+        - ansible_os_bios_version == 'hello'
+      vars:
+        name: hello
+        autoclean: "{{ ansible_all_ipv4_addresses }}"
+

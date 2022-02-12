@@ -2,3 +2,7 @@
 # defaults file for test
 
 test_vars_hello: cool
+
+test_dict_value:
+  k1_this_is_very_long: this is defaults
+  k2_short: short value
