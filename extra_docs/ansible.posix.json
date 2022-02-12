@@ -1,0 +1,1058 @@
+{
+  "ansible.posix.acl": {
+    "doc": {
+      "description": "Set and retrieve file ACL information.",
+      "has_action": false,
+      "notes": "The C(acl) module requires that ACLs are enabled on the target filesystem and that the C(setfacl) and C(getfacl) binaries are installed.\nAs of Ansible 2.0, this module only supports Linux distributions.\nAs of Ansible 2.3, the I(name) option has been changed to I(path) as default, but I(name) still works as well.",
+      "options": {
+        "default": {
+          "aliases": [],
+          "description": "If the target is a directory, setting this to C(yes) will make it the default ACL for entities created inside the directory.\nSetting C(default) to C(yes) causes an error if the path is a file.",
+          "default": "False",
+          "type": "bool",
+          "required": false,
+          "suboptions": {}
+        },
+        "entity": {
+          "aliases": [],
+          "description": "The actual user or group that the ACL applies to when matching entity types user or group are selected.",
+          "type": "str",
+          "required": false,
+          "suboptions": {}
+        },
+        "entry": {
+          "aliases": [],
+          "description": "DEPRECATED.\nThe ACL to set or remove.\nThis must always be quoted in the form of C(<etype>:<qualifier>:<perms>).\nThe qualifier may be empty for some types, but the type and perms are always required.\nC(-) can be used as placeholder when you do not care about permissions.\nThis is now superseded by entity, type and permissions fields.",
+          "type": "str",
+          "required": false,
+          "suboptions": {}
+        },
+        "etype": {
+          "aliases": [],
+          "description": "The entity type of the ACL to apply, see C(setfacl) documentation for more info.",
+          "type": "str",
+          "required": false,
+          "choices": [
+            "group",
+            "mask",
+            "other",
+            "user"
+          ],
+          "suboptions": {}
+        },
+        "follow": {
+          "aliases": [],
+          "description": "Whether to follow symlinks on the path if a symlink is encountered.",
+          "default": "True",
+          "type": "bool",
+          "required": false,
+          "suboptions": {}
+        },
+        "path": {
+          "aliases": [
+            "name"
+          ],
+          "description": "The full path of the file or object.",
+          "type": "path",
+          "required": true,
+          "suboptions": {}
+        },
+        "permissions": {
+          "aliases": [],
+          "description": "The permissions to apply/remove can be any combination of C(r), C(w), C(x)\n(read, write and execute respectively), and C(X) (execute permission if the file is a directory or already has execute permission for some user)",
+          "type": "str",
+          "required": false,
+          "suboptions": {}
+        },
+        "recalculate_mask": {
+          "aliases": [],
+          "description": "Select if and when to recalculate the effective right masks of the files.\nSee C(setfacl) documentation for more info.\nIncompatible with C(state=query).",
+          "default": "default",
+          "type": "str",
+          "required": false,
+          "choices": [
+            "default",
+            "mask",
+            "no_mask"
+          ],
+          "suboptions": {}
+        },
+        "recursive": {
+          "aliases": [
+            "recurse"
+          ],
+          "description": "Recursively sets the specified ACL.\nIncompatible with C(state=query).\nAlias C(recurse) added in version 1.3.0.",
+          "default": "False",
+          "type": "bool",
+          "required": false,
+          "suboptions": {}
+        },
+        "state": {
+          "aliases": [],
+          "description": "Define whether the ACL should be present or not.\nThe C(query) state gets the current ACL without changing it, for use in C(register) operations.",
+          "default": "query",
+          "type": "str",
+          "required": false,
+          "choices": [
+            "absent",
+            "present",
+            "query"
+          ],
+          "suboptions": {}
+        },
+        "use_nfsv4_acls": {
+          "aliases": [],
+          "description": "Use NFSv4 ACLs instead of POSIX ACLs.",
+          "default": "False",
+          "type": "bool",
+          "required": false,
+          "suboptions": {}
+        }
+      },
+      "short_description": "Set and retrieve file ACL information.",
+      "version_added": "1.0.0"
+    },
+    "examples": "\n- name: Grant user Joe read access to a file\n  ansible.posix.acl:\n    path: /etc/foo.conf\n    entity: joe\n    etype: user\n    permissions: r\n    state: present\n\n- name: Removes the ACL for Joe on a specific file\n  ansible.posix.acl:\n    path: /etc/foo.conf\n    entity: joe\n    etype: user\n    state: absent\n\n- name: Sets default ACL for joe on /etc/foo.d/\n  ansible.posix.acl:\n    path: /etc/foo.d/\n    entity: joe\n    etype: user\n    permissions: rw\n    default: yes\n    state: present\n\n- name: Same as previous but using entry shorthand\n  ansible.posix.acl:\n    path: /etc/foo.d/\n    entry: default:user:joe:rw-\n    state: present\n\n- name: Obtain the ACL for a specific file\n  ansible.posix.acl:\n    path: /etc/foo.conf\n  register: acl_info\n"
+  },
+  "ansible.posix.at": {
+    "doc": {
+      "description": "Use this module to schedule a command or script file to run once in the future.\nAll jobs are executed in the 'a' queue.",
+      "has_action": false,
+      "options": {
+        "command": {
+          "aliases": [],
+          "description": "A command to be executed in the future.",
+          "type": "str",
+          "required": false,
+          "suboptions": {}
+        },
+        "count": {
+          "aliases": [],
+          "description": "The count of units in the future to execute the command or script file.",
+          "type": "int",
+          "required": false,
+          "suboptions": {}
+        },
+        "script_file": {
+          "aliases": [],
+          "description": "An existing script file to be executed in the future.",
+          "type": "str",
+          "required": false,
+          "suboptions": {}
+        },
+        "state": {
+          "aliases": [],
+          "description": "The state dictates if the command or script file should be evaluated as present(added) or absent(deleted).",
+          "default": "present",
+          "type": "str",
+          "required": false,
+          "choices": [
+            "absent",
+            "present"
+          ],
+          "suboptions": {}
+        },
+        "unique": {
+          "aliases": [],
+          "description": "If a matching job is present a new job will not be added.",
+          "default": "False",
+          "type": "bool",
+          "required": false,
+          "suboptions": {}
+        },
+        "units": {
+          "aliases": [],
+          "description": "The type of units in the future to execute the command or script file.",
+          "type": "str",
+          "required": false,
+          "choices": [
+            "minutes",
+            "hours",
+            "days",
+            "weeks"
+          ],
+          "suboptions": {}
+        }
+      },
+      "requirements": [
+        "at"
+      ],
+      "short_description": "Schedule the execution of a command or script file via the at command",
+      "version_added": "1.0.0"
+    },
+    "examples": "\n- name: Schedule a command to execute in 20 minutes as root\n  ansible.posix.at:\n    command: ls -d / >/dev/null\n    count: 20\n    units: minutes\n\n- name: Match a command to an existing job and delete the job\n  ansible.posix.at:\n    command: ls -d / >/dev/null\n    state: absent\n\n- name: Schedule a command to execute in 20 minutes making sure it is unique in the queue\n  ansible.posix.at:\n    command: ls -d / >/dev/null\n    count: 20\n    units: minutes\n    unique: yes\n"
+  },
+  "ansible.posix.authorized_key": {
+    "doc": {
+      "description": "Adds or removes SSH authorized keys for particular user accounts.",
+      "has_action": false,
+      "options": {
+        "comment": {
+          "aliases": [],
+          "description": "Change the comment on the public key.\nRewriting the comment is useful in cases such as fetching it from GitHub or GitLab.\nIf no comment is specified, the existing comment will be kept.",
+          "type": "str",
+          "required": false,
+          "suboptions": {}
+        },
+        "exclusive": {
+          "aliases": [],
+          "description": "Whether to remove all other non-specified keys from the authorized_keys file.\nMultiple keys can be specified in a single C(key) string value by separating them by newlines.\nThis option is not loop aware, so if you use C(with_) , it will be exclusive per iteration of the loop.\nIf you want multiple keys in the file you need to pass them all to C(key) in a single batch as mentioned above.",
+          "default": "False",
+          "type": "bool",
+          "required": false,
+          "suboptions": {}
+        },
+        "follow": {
+          "aliases": [],
+          "description": "Follow path symlink instead of replacing it.",
+          "default": "False",
+          "type": "bool",
+          "required": false,
+          "suboptions": {}
+        },
+        "key": {
+          "aliases": [],
+          "description": "The SSH public key(s), as a string or (since Ansible 1.9) url (https://github.com/username.keys).",
+          "type": "str",
+          "required": true,
+          "suboptions": {}
+        },
+        "key_options": {
+          "aliases": [],
+          "description": "A string of ssh key options to be prepended to the key in the authorized_keys file.",
+          "type": "str",
+          "required": false,
+          "suboptions": {}
+        },
+        "manage_dir": {
+          "aliases": [],
+          "description": "Whether this module should manage the directory of the authorized key file.\nIf set to C(yes), the module will create the directory, as well as set the owner and permissions of an existing directory.\nBe sure to set C(manage_dir=no) if you are using an alternate directory for authorized_keys, as set with C(path), since you could lock yourself out of SSH access.\nSee the example below.",
+          "default": "True",
+          "type": "bool",
+          "required": false,
+          "suboptions": {}
+        },
+        "path": {
+          "aliases": [],
+          "description": "Alternate path to the authorized_keys file.\nWhen unset, this value defaults to I(~/.ssh/authorized_keys).",
+          "type": "path",
+          "required": false,
+          "suboptions": {}
+        },
+        "state": {
+          "aliases": [],
+          "description": "Whether the given key (with the given key_options) should or should not be in the file.",
+          "default": "present",
+          "type": "str",
+          "required": false,
+          "choices": [
+            "absent",
+            "present"
+          ],
+          "suboptions": {}
+        },
+        "user": {
+          "aliases": [],
+          "description": "The username on the remote host whose authorized_keys file will be modified.",
+          "type": "str",
+          "required": true,
+          "suboptions": {}
+        },
+        "validate_certs": {
+          "aliases": [],
+          "description": "This only applies if using a https url as the source of the keys.\nIf set to C(no), the SSL certificates will not be validated.\nThis should only set to C(no) used on personally controlled sites using self-signed certificates as it avoids verifying the source site.\nPrior to 2.1 the code worked as if this was set to C(yes).",
+          "default": "True",
+          "type": "bool",
+          "required": false,
+          "suboptions": {}
+        }
+      },
+      "short_description": "Adds or removes an SSH authorized key",
+      "version_added": "1.0.0"
+    },
+    "examples": "\n- name: Set authorized key taken from file\n  ansible.posix.authorized_key:\n    user: charlie\n    state: present\n    key: \"{{ lookup('file', '/home/charlie/.ssh/id_rsa.pub') }}\"\n\n- name: Set authorized keys taken from url\n  ansible.posix.authorized_key:\n    user: charlie\n    state: present\n    key: https://github.com/charlie.keys\n\n- name: Set authorized key in alternate location\n  ansible.posix.authorized_key:\n    user: charlie\n    state: present\n    key: \"{{ lookup('file', '/home/charlie/.ssh/id_rsa.pub') }}\"\n    path: /etc/ssh/authorized_keys/charlie\n    manage_dir: False\n\n- name: Set up multiple authorized keys\n  ansible.posix.authorized_key:\n    user: deploy\n    state: present\n    key: '{{ item }}'\n  with_file:\n    - public_keys/doe-jane\n    - public_keys/doe-john\n\n- name: Set authorized key defining key options\n  ansible.posix.authorized_key:\n    user: charlie\n    state: present\n    key: \"{{ lookup('file', '/home/charlie/.ssh/id_rsa.pub') }}\"\n    key_options: 'no-port-forwarding,from=\"10.0.1.1\"'\n\n- name: Set authorized key without validating the TLS/SSL certificates\n  ansible.posix.authorized_key:\n    user: charlie\n    state: present\n    key: https://github.com/user.keys\n    validate_certs: False\n\n- name: Set authorized key, removing all the authorized keys already set\n  ansible.posix.authorized_key:\n    user: root\n    key: \"{{ lookup('file', 'public_keys/doe-jane') }}\"\n    state: present\n    exclusive: True\n\n- name: Set authorized key for user ubuntu copying it from current user\n  ansible.posix.authorized_key:\n    user: ubuntu\n    state: present\n    key: \"{{ lookup('file', lookup('env','HOME') + '/.ssh/id_rsa.pub') }}\"\n"
+  },
+  "ansible.posix.firewalld": {
+    "doc": {
+      "description": "This module allows for addition or deletion of services and ports (either TCP or UDP) in either running or permanent firewalld rules.",
+      "has_action": false,
+      "notes": "Not tested on any Debian based system.\nRequires the python2 bindings of firewalld, which may not be installed by default.\nFor distributions where the python2 firewalld bindings are unavailable (e.g Fedora 28 and later) you will have to set the ansible_python_interpreter for these hosts to the python3 interpreter path and install the python3 bindings.\nZone transactions (creating, deleting) can be performed by using only the zone and state parameters \"present\" or \"absent\". Note that zone transactions must explicitly be permanent. This is a limitation in firewalld. This also means that you will have to reload firewalld after adding a zone that you wish to perform immediate actions on. The module will not take care of this for you implicitly because that would undo any previously performed immediate actions which were not permanent. Therefore, if you require immediate access to a newly created zone it is recommended you reload firewalld immediately after the zone creation returns with a changed state and before you perform any other immediate, non-permanent actions on that zone.",
+      "options": {
+        "icmp_block": {
+          "aliases": [],
+          "description": "The ICMP block you would like to add/remove to/from a zone in firewalld.",
+          "type": "str",
+          "required": false,
+          "suboptions": {}
+        },
+        "icmp_block_inversion": {
+          "aliases": [],
+          "description": "Enable/Disable inversion of ICMP blocks for a zone in firewalld.",
+          "type": "str",
+          "required": false,
+          "suboptions": {}
+        },
+        "immediate": {
+          "aliases": [],
+          "description": "Should this configuration be applied immediately, if set as permanent.",
+          "default": "False",
+          "type": "bool",
+          "required": false,
+          "suboptions": {}
+        },
+        "interface": {
+          "aliases": [],
+          "description": "The interface you would like to add/remove to/from a zone in firewalld.",
+          "type": "str",
+          "required": false,
+          "suboptions": {}
+        },
+        "masquerade": {
+          "aliases": [],
+          "description": "The masquerade setting you would like to enable/disable to/from zones within firewalld.",
+          "type": "str",
+          "required": false,
+          "suboptions": {}
+        },
+        "offline": {
+          "aliases": [],
+          "description": "Whether to run this module even when firewalld is offline.",
+          "type": "bool",
+          "required": false,
+          "suboptions": {}
+        },
+        "permanent": {
+          "aliases": [],
+          "description": "Should this configuration be in the running firewalld configuration or persist across reboots.\nAs of Ansible 2.3, permanent operations can operate on firewalld configs when it is not running (requires firewalld >= 0.3.9).\nNote that if this is C(no), immediate is assumed C(yes).",
+          "type": "bool",
+          "required": false,
+          "suboptions": {}
+        },
+        "port": {
+          "aliases": [],
+          "description": "Name of a port or port range to add/remove to/from firewalld.\nMust be in the form PORT/PROTOCOL or PORT-PORT/PROTOCOL for port ranges.",
+          "type": "str",
+          "required": false,
+          "suboptions": {}
+        },
+        "port_forward": {
+          "aliases": [],
+          "description": "Port and protocol to forward using firewalld.",
+          "type": "list",
+          "required": false,
+          "elements": "dict",
+          "suboptions": {
+            "port": {
+              "aliases": [],
+              "description": "Source port to forward from",
+              "type": "str",
+              "required": true,
+              "suboptions": {}
+            },
+            "proto": {
+              "aliases": [],
+              "description": "protocol to forward",
+              "type": "str",
+              "required": true,
+              "choices": [
+                "udp",
+                "tcp"
+              ],
+              "suboptions": {}
+            },
+            "toaddr": {
+              "aliases": [],
+              "description": "Optional address to forward to",
+              "type": "str",
+              "required": false,
+              "suboptions": {}
+            },
+            "toport": {
+              "aliases": [],
+              "description": "destination port",
+              "type": "str",
+              "required": true,
+              "suboptions": {}
+            }
+          }
+        },
+        "rich_rule": {
+          "aliases": [],
+          "description": "Rich rule to add/remove to/from firewalld.\nSee L(Syntax for firewalld rich language rules,https://firewalld.org/documentation/man-pages/firewalld.richlanguage.html).",
+          "type": "str",
+          "required": false,
+          "suboptions": {}
+        },
+        "service": {
+          "aliases": [],
+          "description": "Name of a service to add/remove to/from firewalld.\nThe service must be listed in output of firewall-cmd --get-services.",
+          "type": "str",
+          "required": false,
+          "suboptions": {}
+        },
+        "source": {
+          "aliases": [],
+          "description": "The source/network you would like to add/remove to/from firewalld.",
+          "type": "str",
+          "required": false,
+          "suboptions": {}
+        },
+        "state": {
+          "aliases": [],
+          "description": "Enable or disable a setting.\nFor ports: Should this port accept (enabled) or reject (disabled) connections.\nThe states C(present) and C(absent) can only be used in zone level operations (i.e. when no other parameters but zone and state are set).",
+          "type": "str",
+          "required": true,
+          "choices": [
+            "absent",
+            "disabled",
+            "enabled",
+            "present"
+          ],
+          "suboptions": {}
+        },
+        "target": {
+          "aliases": [],
+          "description": "firewalld Zone target\nIf state is set to C(absent), this will reset the target to default",
+          "type": "str",
+          "required": false,
+          "choices": [
+            "default",
+            "ACCEPT",
+            "DROP",
+            "%%REJECT%%"
+          ],
+          "version_added": "1.2.0",
+          "suboptions": {}
+        },
+        "timeout": {
+          "aliases": [],
+          "description": "The amount of time in seconds the rule should be in effect for when non-permanent.",
+          "default": "0",
+          "type": "int",
+          "required": false,
+          "suboptions": {}
+        },
+        "zone": {
+          "aliases": [],
+          "description": "The firewalld zone to add/remove to/from.\nNote that the default zone can be configured per system but C(public) is default from upstream.\nAvailable choices can be extended based on per-system configs, listed here are \"out of the box\" defaults.\nPossible values include C(block), C(dmz), C(drop), C(external), C(home), C(internal), C(public), C(trusted), C(work).",
+          "type": "str",
+          "required": false,
+          "suboptions": {}
+        }
+      },
+      "requirements": [
+        "firewalld >= 0.2.11"
+      ],
+      "short_description": "Manage arbitrary ports/services with firewalld"
+    },
+    "examples": "\n- name: permit traffic in default zone for https service\n  ansible.posix.firewalld:\n    service: https\n    permanent: yes\n    state: enabled\n\n- name: do not permit traffic in default zone on port 8081/tcp\n  ansible.posix.firewalld:\n    port: 8081/tcp\n    permanent: yes\n    state: disabled\n\n- ansible.posix.firewalld:\n    port: 161-162/udp\n    permanent: yes\n    state: enabled\n\n- ansible.posix.firewalld:\n    zone: dmz\n    service: http\n    permanent: yes\n    state: enabled\n\n- ansible.posix.firewalld:\n    rich_rule: rule service name=\"ftp\" audit limit value=\"1/m\" accept\n    permanent: yes\n    state: enabled\n\n- ansible.posix.firewalld:\n    source: 192.0.2.0/24\n    zone: internal\n    state: enabled\n\n- ansible.posix.firewalld:\n    zone: trusted\n    interface: eth2\n    permanent: yes\n    state: enabled\n\n- ansible.posix.firewalld:\n    masquerade: yes\n    state: enabled\n    permanent: yes\n    zone: dmz\n\n- ansible.posix.firewalld:\n    zone: custom\n    state: present\n    permanent: yes\n\n- ansible.posix.firewalld:\n    zone: drop\n    state: enabled\n    permanent: yes\n    icmp_block_inversion: yes\n\n- ansible.posix.firewalld:\n    zone: drop\n    state: enabled\n    permanent: yes\n    icmp_block: echo-request\n\n- ansible.posix.firewalld:\n    zone: internal\n    state: present\n    permanent: yes\n    target: ACCEPT\n\n- name: Redirect port 443 to 8443 with Rich Rule\n  ansible.posix.firewalld:\n    rich_rule: rule family=ipv4 forward-port port=443 protocol=tcp to-port=8443\n    zone: public\n    permanent: yes\n    immediate: yes\n    state: enabled\n"
+  },
+  "ansible.posix.firewalld_info": {
+    "doc": {
+      "description": "This module gathers information about firewalld rules.",
+      "has_action": false,
+      "options": {
+        "active_zones": {
+          "aliases": [],
+          "description": "Gather information about active zones.",
+          "default": "False",
+          "type": "bool",
+          "required": false,
+          "suboptions": {}
+        },
+        "zones": {
+          "aliases": [],
+          "description": "Gather information about specific zones.\nIf only works if C(active_zones) is set to C(false).",
+          "type": "list",
+          "required": false,
+          "elements": "str",
+          "suboptions": {}
+        }
+      },
+      "requirements": [
+        "firewalld >= 0.2.11",
+        "python-firewall",
+        "python-dbus"
+      ],
+      "short_description": "Gather information about firewalld"
+    },
+    "examples": "\n- name: Gather information about active zones\n  ansible.posix.firewalld_info:\n    active_zones: yes\n\n- name: Gather information about specific zones\n  ansible.posix.firewalld_info:\n    zones:\n      - public\n      - external\n      - internal\n"
+  },
+  "ansible.posix.mount": {
+    "doc": {
+      "description": "This module controls active and configured mount points in C(/etc/fstab).",
+      "has_action": false,
+      "notes": "As of Ansible 2.3, the I(name) option has been changed to I(path) as default, but I(name) still works as well.\nUsing C(remounted) with I(opts) set may create unexpected results based on the existing options already defined on mount, so care should be taken to ensure that conflicting options are not present before hand.",
+      "options": {
+        "backup": {
+          "aliases": [],
+          "description": "Create a backup file including the timestamp information so you can get the original file back if you somehow clobbered it incorrectly.",
+          "default": "False",
+          "type": "bool",
+          "required": false,
+          "suboptions": {}
+        },
+        "boot": {
+          "aliases": [],
+          "description": "Determines if the filesystem should be mounted on boot.\nOnly applies to Solaris and Linux systems.\nFor Solaris systems, C(true) will set C(yes) as the value of mount at boot in I(/etc/vfstab).\nFor Linux, FreeBSD, NetBSD and OpenBSD systems, C(false) will add C(noauto) to mount options in I(/etc/fstab).\nTo avoid mount option conflicts, if C(noauto) specified in C(opts), mount module will ignore C(boot).",
+          "default": "True",
+          "type": "bool",
+          "required": false,
+          "suboptions": {}
+        },
+        "dump": {
+          "aliases": [],
+          "description": "Dump (see fstab(5)).\nNote that if set to C(null) and I(state) set to C(present), it will cease to work and duplicate entries will be made with subsequent runs.\nHas no effect on Solaris systems.",
+          "default": "0",
+          "type": "str",
+          "required": false,
+          "suboptions": {}
+        },
+        "fstab": {
+          "aliases": [],
+          "description": "File to use instead of C(/etc/fstab).\nYou should not use this option unless you really know what you are doing.\nThis might be useful if you need to configure mountpoints in a chroot environment.\nOpenBSD does not allow specifying alternate fstab files with mount so do not use this on OpenBSD with any state that operates on the live filesystem.\nThis parameter defaults to /etc/fstab or /etc/vfstab on Solaris.",
+          "type": "str",
+          "required": false,
+          "suboptions": {}
+        },
+        "fstype": {
+          "aliases": [],
+          "description": "Filesystem type.\nRequired when I(state) is C(present) or C(mounted).",
+          "type": "str",
+          "required": false,
+          "suboptions": {}
+        },
+        "opts": {
+          "aliases": [],
+          "description": "Mount options (see fstab(5), or vfstab(4) on Solaris).",
+          "type": "str",
+          "required": false,
+          "suboptions": {}
+        },
+        "passno": {
+          "aliases": [],
+          "description": "Passno (see fstab(5)).\nNote that if set to C(null) and I(state) set to C(present), it will cease to work and duplicate entries will be made with subsequent runs.\nDeprecated on Solaris systems.",
+          "default": "0",
+          "type": "str",
+          "required": false,
+          "suboptions": {}
+        },
+        "path": {
+          "aliases": [
+            "name"
+          ],
+          "description": "Path to the mount point (e.g. C(/mnt/files)).\nBefore Ansible 2.3 this option was only usable as I(dest), I(destfile) and I(name).",
+          "type": "path",
+          "required": true,
+          "suboptions": {}
+        },
+        "src": {
+          "aliases": [],
+          "description": "Device (or NFS volume, or something else) to be mounted on I(path).\nRequired when I(state) set to C(present) or C(mounted).",
+          "type": "path",
+          "required": false,
+          "suboptions": {}
+        },
+        "state": {
+          "aliases": [],
+          "description": "If C(mounted), the device will be actively mounted and appropriately configured in I(fstab). If the mount point is not present, the mount point will be created.\nIf C(unmounted), the device will be unmounted without changing I(fstab).\nC(present) only specifies that the device is to be configured in I(fstab) and does not trigger or require a mount.\nC(absent) specifies that the device mount's entry will be removed from I(fstab) and will also unmount the device and remove the mount point.\nC(remounted) specifies that the device will be remounted for when you want to force a refresh on the mount itself (added in 2.9). This will always return changed=true. If I(opts) is set, the options will be applied to the remount, but will not change I(fstab).  Additionally, if I(opts) is set, and the remount command fails, the module will error to prevent unexpected mount changes.  Try using C(mounted) instead to work around this issue.",
+          "type": "str",
+          "required": true,
+          "choices": [
+            "absent",
+            "mounted",
+            "present",
+            "unmounted",
+            "remounted"
+          ],
+          "suboptions": {}
+        }
+      },
+      "short_description": "Control active and configured mount points",
+      "version_added": "1.0.0"
+    },
+    "examples": "\n# Before 2.3, option 'name' was used instead of 'path'\n- name: Mount DVD read-only\n  ansible.posix.mount:\n    path: /mnt/dvd\n    src: /dev/sr0\n    fstype: iso9660\n    opts: ro,noauto\n    state: present\n\n- name: Mount up device by label\n  ansible.posix.mount:\n    path: /srv/disk\n    src: LABEL=SOME_LABEL\n    fstype: ext4\n    state: present\n\n- name: Mount up device by UUID\n  ansible.posix.mount:\n    path: /home\n    src: UUID=b3e48f45-f933-4c8e-a700-22a159ec9077\n    fstype: xfs\n    opts: noatime\n    state: present\n\n- name: Unmount a mounted volume\n  ansible.posix.mount:\n    path: /tmp/mnt-pnt\n    state: unmounted\n\n- name: Remount a mounted volume\n  ansible.posix.mount:\n    path: /tmp/mnt-pnt\n    state: remounted\n\n# The following will not save changes to fstab, and only be temporary until\n# a reboot, or until calling \"state: unmounted\" followed by \"state: mounted\"\n# on the same \"path\"\n- name: Remount a mounted volume and append exec to the existing options\n  ansible.posix.mount:\n    path: /tmp\n    state: remounted\n    opts: exec\n\n- name: Mount and bind a volume\n  ansible.posix.mount:\n    path: /system/new_volume/boot\n    src: /boot\n    opts: bind\n    state: mounted\n    fstype: none\n\n- name: Mount an NFS volume\n  ansible.posix.mount:\n    src: 192.168.1.100:/nfs/ssd/shared_data\n    path: /mnt/shared_data\n    opts: rw,sync,hard,intr\n    state: mounted\n    fstype: nfs\n\n- name: Mount NFS volumes with noauto according to boot option\n  ansible.posix.mount:\n    src: 192.168.1.100:/nfs/ssd/shared_data\n    path: /mnt/shared_data\n    opts: rw,sync,hard,intr\n    boot: no\n    state: mounted\n    fstype: nfs\n"
+  },
+  "ansible.posix.patch": {
+    "doc": {
+      "description": "Apply patch files using the GNU patch tool.",
+      "has_action": true,
+      "notes": "This module requires GNU I(patch) utility to be installed on the remote host.",
+      "options": {
+        "backup": {
+          "aliases": [],
+          "description": "Passes C(--backup --version-control=numbered) to patch, producing numbered backup copies.",
+          "default": "False",
+          "type": "bool",
+          "required": false,
+          "suboptions": {}
+        },
+        "basedir": {
+          "aliases": [],
+          "description": "Path of a base directory in which the patch file will be applied.\nMay be omitted when C(dest) option is specified, otherwise required.",
+          "type": "path",
+          "required": false,
+          "suboptions": {}
+        },
+        "binary": {
+          "aliases": [],
+          "description": "Setting to C(yes) will disable patch's heuristic for transforming CRLF line endings into LF.\nLine endings of src and dest must match.\nIf set to C(no), C(patch) will replace CRLF in C(src) files on POSIX.",
+          "default": "False",
+          "type": "bool",
+          "required": false,
+          "suboptions": {}
+        },
+        "dest": {
+          "aliases": [
+            "originalfile"
+          ],
+          "description": "Path of the file on the remote machine to be patched.\nThe names of the files to be patched are usually taken from the patch file, but if there's just one file to be patched it can specified with this option.",
+          "type": "path",
+          "required": false,
+          "suboptions": {}
+        },
+        "ignore_whitespace": {
+          "aliases": [],
+          "description": "Setting to C(yes) will ignore white space changes between patch and input..",
+          "default": "False",
+          "type": "bool",
+          "required": false,
+          "suboptions": {}
+        },
+        "remote_src": {
+          "aliases": [],
+          "description": "If C(no), it will search for src at originating/controller machine, if C(yes) it will go to the remote/target machine for the C(src).",
+          "default": "False",
+          "type": "bool",
+          "required": false,
+          "suboptions": {}
+        },
+        "src": {
+          "aliases": [
+            "patchfile"
+          ],
+          "description": "Path of the patch file as accepted by the GNU patch tool. If C(remote_src) is 'no', the patch source file is looked up from the module's I(files) directory.",
+          "type": "path",
+          "required": true,
+          "suboptions": {}
+        },
+        "state": {
+          "aliases": [],
+          "description": "Whether the patch should be applied or reverted.",
+          "default": "present",
+          "type": "str",
+          "required": false,
+          "choices": [
+            "absent",
+            "present"
+          ],
+          "suboptions": {}
+        },
+        "strip": {
+          "aliases": [],
+          "description": "Number that indicates the smallest prefix containing leading slashes that will be stripped from each file name found in the patch file.\nFor more information see the strip parameter of the GNU patch tool.",
+          "default": "0",
+          "type": "int",
+          "required": false,
+          "suboptions": {}
+        }
+      },
+      "short_description": "Apply patch files using the GNU patch tool",
+      "version_added": "1.0.0"
+    },
+    "examples": "\n- name: Apply patch to one file\n  ansible.posix.patch:\n    src: /tmp/index.html.patch\n    dest: /var/www/index.html\n\n- name: Apply patch to multiple files under basedir\n  ansible.posix.patch:\n    src: /tmp/customize.patch\n    basedir: /var/www\n    strip: 1\n\n- name: Revert patch to one file\n  ansible.posix.patch:\n    src: /tmp/index.html.patch\n    dest: /var/www/index.html\n    state: absent\n"
+  },
+  "ansible.posix.seboolean": {
+    "doc": {
+      "description": "Toggles SELinux booleans.",
+      "has_action": false,
+      "notes": "Not tested on any Debian based system.",
+      "options": {
+        "ignore_selinux_state": {
+          "aliases": [],
+          "description": "Useful for scenarios (chrooted environment) that you can't get the real SELinux state.",
+          "default": "False",
+          "type": "bool",
+          "required": false,
+          "suboptions": {}
+        },
+        "name": {
+          "aliases": [],
+          "description": "Name of the boolean to configure.",
+          "type": "str",
+          "required": true,
+          "suboptions": {}
+        },
+        "persistent": {
+          "aliases": [],
+          "description": "Set to C(yes) if the boolean setting should survive a reboot.",
+          "default": "no",
+          "type": "bool",
+          "required": false,
+          "suboptions": {}
+        },
+        "state": {
+          "aliases": [],
+          "description": "Desired boolean value",
+          "type": "bool",
+          "required": true,
+          "suboptions": {}
+        }
+      },
+      "requirements": [
+        "libselinux-python",
+        "libsemanage-python"
+      ],
+      "short_description": "Toggles SELinux booleans",
+      "version_added": "1.0.0"
+    },
+    "examples": "\n- name: Set httpd_can_network_connect flag on and keep it persistent across reboots\n  ansible.posix.seboolean:\n    name: httpd_can_network_connect\n    state: yes\n    persistent: yes\n"
+  },
+  "ansible.posix.selinux": {
+    "doc": {
+      "description": "Configures the SELinux mode and policy.\nA reboot may be required after usage.\nAnsible will not issue this reboot but will let you know when it is required.",
+      "has_action": false,
+      "options": {
+        "configfile": {
+          "aliases": [
+            "conf",
+            "file"
+          ],
+          "description": "The path to the SELinux configuration file, if non-standard.",
+          "default": "/etc/selinux/config",
+          "type": "str",
+          "required": false,
+          "suboptions": {}
+        },
+        "policy": {
+          "aliases": [],
+          "description": "The name of the SELinux policy to use (e.g. C(targeted)) will be required if I(state) is not C(disabled).",
+          "type": "str",
+          "required": false,
+          "suboptions": {}
+        },
+        "state": {
+          "aliases": [],
+          "description": "The SELinux mode.",
+          "type": "str",
+          "required": true,
+          "choices": [
+            "disabled",
+            "enforcing",
+            "permissive"
+          ],
+          "suboptions": {}
+        }
+      },
+      "requirements": [
+        "libselinux-python"
+      ],
+      "short_description": "Change policy and state of SELinux",
+      "version_added": "1.0.0"
+    },
+    "examples": "\n- name: Enable SELinux\n  ansible.posix.selinux:\n    policy: targeted\n    state: enforcing\n\n- name: Put SELinux in permissive mode, logging actions that would be blocked.\n  ansible.posix.selinux:\n    policy: targeted\n    state: permissive\n\n- name: Disable SELinux\n  ansible.posix.selinux:\n    state: disabled\n"
+  },
+  "ansible.posix.synchronize": {
+    "doc": {
+      "description": "C(synchronize) is a wrapper around rsync to make common tasks in your playbooks quick and easy.\nIt is run and originates on the local host where Ansible is being run.\nOf course, you could just use the C(command) action to call rsync yourself, but you also have to add a fair number of boilerplate options and host facts.\nThis module is not intended to provide access to the full power of rsync, but does make the most common invocations easier to implement. You `still` may need to call rsync directly via C(command) or C(shell) depending on your use case.",
+      "has_action": true,
+      "notes": "rsync must be installed on both the local and remote host.\nFor the C(synchronize) module, the \"local host\" is the host `the synchronize task originates on`, and the \"destination host\" is the host `synchronize is connecting to`.\nThe \"local host\" can be changed to a different host by using `delegate_to`.  This enables copying between two remote hosts or entirely on one remote machine.\nThe user and permissions for the synchronize `src` are those of the user running the Ansible task on the local host (or the remote_user for a delegate_to host when delegate_to is used).\n\nThe user and permissions for the synchronize `dest` are those of the `remote_user` on the destination host or the `become_user` if `become=yes` is active.\nIn Ansible 2.0 a bug in the synchronize module made become occur on the \"local host\".  This was fixed in Ansible 2.0.1.\nCurrently, synchronize is limited to elevating permissions via passwordless sudo.  This is because rsync itself is connecting to the remote machine and rsync doesn't give us a way to pass sudo credentials in.\nCurrently there are only a few connection types which support synchronize (ssh, paramiko, local, and docker) because a sync strategy has been determined for those connection types.  Note that the connection for these must not need a password as rsync itself is making the connection and rsync does not provide us a way to pass a password to the connection.\nExpect that dest=~/x will be ~<remote_user>/x even if using sudo.\nInspect the verbose output to validate the destination user/host/path are what was expected.\nTo exclude files and directories from being synchronized, you may add C(.rsync-filter) files to the source directory.\nrsync daemon must be up and running with correct permission when using rsync protocol in source or destination path.\nThe C(synchronize) module enables `--delay-updates` by default to avoid leaving a destination in a broken in-between state if the underlying rsync process encounters an error. Those synchronizing large numbers of files that are willing to trade safety for performance should disable this option.\nlink_destination is subject to the same limitations as the underlying rsync daemon. Hard links are only preserved if the relative subtrees of the source and destination are the same. Attempts to hardlink into a directory that is a subdirectory of the source will be prevented.",
+      "options": {
+        "archive": {
+          "aliases": [],
+          "description": "Mirrors the rsync archive flag, enables recursive, links, perms, times, owner, group flags and -D.",
+          "default": "True",
+          "type": "bool",
+          "required": false,
+          "suboptions": {}
+        },
+        "checksum": {
+          "aliases": [],
+          "description": "Skip based on checksum, rather than mod-time & size; Note that that \"archive\" option is still enabled by default - the \"checksum\" option will not disable it.",
+          "default": "False",
+          "type": "bool",
+          "required": false,
+          "suboptions": {}
+        },
+        "compress": {
+          "aliases": [],
+          "description": "Compress file data during the transfer.\nIn most cases, leave this enabled unless it causes problems.",
+          "default": "True",
+          "type": "bool",
+          "required": false,
+          "suboptions": {}
+        },
+        "copy_links": {
+          "aliases": [],
+          "description": "Copy symlinks as the item that they point to (the referent) is copied, rather than the symlink.",
+          "default": "False",
+          "type": "bool",
+          "required": false,
+          "suboptions": {}
+        },
+        "delay_updates": {
+          "aliases": [],
+          "description": "This option puts the temporary file from each updated file into a holding directory until the end of the transfer, at which time all the files are renamed into place in rapid succession.",
+          "default": "True",
+          "type": "bool",
+          "required": false,
+          "version_added": "1.3.0",
+          "suboptions": {}
+        },
+        "delete": {
+          "aliases": [],
+          "description": "Delete files in I(dest) that do not exist (after transfer, not before) in the I(src) path.\nThis option requires I(recursive=yes).\nThis option ignores excluded files and behaves like the rsync opt C(--delete-after).",
+          "default": "False",
+          "type": "bool",
+          "required": false,
+          "suboptions": {}
+        },
+        "dest": {
+          "aliases": [],
+          "description": "Path on the destination host that will be synchronized from the source.\nThe path can be absolute or relative.",
+          "type": "str",
+          "required": true,
+          "suboptions": {}
+        },
+        "dest_port": {
+          "aliases": [],
+          "description": "Port number for ssh on the destination host.\nPrior to Ansible 2.0, the ansible_ssh_port inventory var took precedence over this value.\nThis parameter defaults to the value of C(ansible_port), the C(remote_port) config setting or the value from ssh client configuration if none of the former have been set.",
+          "type": "int",
+          "required": false,
+          "suboptions": {}
+        },
+        "dirs": {
+          "aliases": [],
+          "description": "Transfer directories without recursing.",
+          "default": "False",
+          "type": "bool",
+          "required": false,
+          "suboptions": {}
+        },
+        "existing_only": {
+          "aliases": [],
+          "description": "Skip creating new files on receiver.",
+          "default": "False",
+          "type": "bool",
+          "required": false,
+          "suboptions": {}
+        },
+        "group": {
+          "aliases": [],
+          "description": "Preserve group.\nThis parameter defaults to the value of the archive option.",
+          "type": "bool",
+          "required": false,
+          "suboptions": {}
+        },
+        "link_dest": {
+          "aliases": [],
+          "description": "Add a destination to hard link against during the rsync.",
+          "type": "list",
+          "required": false,
+          "elements": "str",
+          "suboptions": {}
+        },
+        "links": {
+          "aliases": [],
+          "description": "Copy symlinks as symlinks.\nThis parameter defaults to the value of the archive option.",
+          "type": "bool",
+          "required": false,
+          "suboptions": {}
+        },
+        "mode": {
+          "aliases": [],
+          "description": "Specify the direction of the synchronization.\nIn push mode the localhost or delegate is the source.\nIn pull mode the remote host in context is the source.",
+          "default": "push",
+          "type": "str",
+          "required": false,
+          "choices": [
+            "pull",
+            "push"
+          ],
+          "suboptions": {}
+        },
+        "owner": {
+          "aliases": [],
+          "description": "Preserve owner (super user only).\nThis parameter defaults to the value of the archive option.",
+          "type": "bool",
+          "required": false,
+          "suboptions": {}
+        },
+        "partial": {
+          "aliases": [],
+          "description": "Tells rsync to keep the partial file which should make a subsequent transfer of the rest of the file much faster.",
+          "default": "False",
+          "type": "bool",
+          "required": false,
+          "suboptions": {}
+        },
+        "perms": {
+          "aliases": [],
+          "description": "Preserve permissions.\nThis parameter defaults to the value of the archive option.",
+          "type": "bool",
+          "required": false,
+          "suboptions": {}
+        },
+        "private_key": {
+          "aliases": [],
+          "description": "Specify the private key to use for SSH-based rsync connections (e.g. C(~/.ssh/id_rsa)).",
+          "type": "path",
+          "required": false,
+          "suboptions": {}
+        },
+        "recursive": {
+          "aliases": [],
+          "description": "Recurse into directories.\nThis parameter defaults to the value of the archive option.",
+          "type": "bool",
+          "required": false,
+          "suboptions": {}
+        },
+        "rsync_opts": {
+          "aliases": [],
+          "description": "Specify additional rsync options by passing in an array.\nNote that an empty string in C(rsync_opts) will end up transfer the current working directory.",
+          "type": "list",
+          "required": false,
+          "elements": "str",
+          "suboptions": {}
+        },
+        "rsync_path": {
+          "aliases": [],
+          "description": "Specify the rsync command to run on the remote host. See C(--rsync-path) on the rsync man page.\nTo specify the rsync command to run on the local host, you need to set this your task var C(ansible_rsync_path).",
+          "type": "str",
+          "required": false,
+          "suboptions": {}
+        },
+        "rsync_timeout": {
+          "aliases": [],
+          "description": "Specify a C(--timeout) for the rsync command in seconds.",
+          "default": "0",
+          "type": "int",
+          "required": false,
+          "suboptions": {}
+        },
+        "set_remote_user": {
+          "aliases": [],
+          "description": "Put user@ for the remote paths.\nIf you have a custom ssh config to define the remote user for a host that does not match the inventory user, you should set this parameter to C(no).",
+          "default": "True",
+          "type": "bool",
+          "required": false,
+          "suboptions": {}
+        },
+        "src": {
+          "aliases": [],
+          "description": "Path on the source host that will be synchronized to the destination.\nThe path can be absolute or relative.",
+          "type": "str",
+          "required": true,
+          "suboptions": {}
+        },
+        "ssh_connection_multiplexing": {
+          "aliases": [],
+          "description": "SSH connection multiplexing for rsync is disabled by default to prevent misconfigured ControlSockets from resulting in failed SSH connections. This is accomplished by setting the SSH C(ControlSocket) to C(none).\nSet this option to C(yes) to allow multiplexing and reduce SSH connection overhead.\nNote that simply setting this option to C(yes) is not enough; You must also configure SSH connection multiplexing in your SSH client config by setting values for C(ControlMaster), C(ControlPersist) and C(ControlPath).",
+          "default": "False",
+          "type": "bool",
+          "required": false,
+          "suboptions": {}
+        },
+        "times": {
+          "aliases": [],
+          "description": "Preserve modification times.\nThis parameter defaults to the value of the archive option.",
+          "type": "bool",
+          "required": false,
+          "suboptions": {}
+        },
+        "use_ssh_args": {
+          "aliases": [],
+          "description": "In Ansible 2.10 and lower, it uses the ssh_args specified in C(ansible.cfg).\nIn Ansible 2.11 and onwards, when set to C(true), it uses all SSH connection configurations like C(ansible_ssh_args), C(ansible_ssh_common_args), and C(ansible_ssh_extra_args).",
+          "default": "False",
+          "type": "bool",
+          "required": false,
+          "suboptions": {}
+        },
+        "verify_host": {
+          "aliases": [],
+          "description": "Verify destination host key.",
+          "default": "False",
+          "type": "bool",
+          "required": false,
+          "suboptions": {}
+        }
+      },
+      "short_description": "A wrapper around rsync to make common tasks in your playbooks quick and easy",
+      "version_added": "1.0.0"
+    },
+    "examples": "\n- name: Synchronization of src on the control machine to dest on the remote hosts\n  ansible.posix.synchronize:\n    src: some/relative/path\n    dest: /some/absolute/path\n\n- name: Synchronization using rsync protocol (push)\n  ansible.posix.synchronize:\n    src: some/relative/path/\n    dest: rsync://somehost.com/path/\n\n- name: Synchronization using rsync protocol (pull)\n  ansible.posix.synchronize:\n    mode: pull\n    src: rsync://somehost.com/path/\n    dest: /some/absolute/path/\n\n- name:  Synchronization using rsync protocol on delegate host (push)\n  ansible.posix.synchronize:\n    src: /some/absolute/path/\n    dest: rsync://somehost.com/path/\n  delegate_to: delegate.host\n\n- name: Synchronization using rsync protocol on delegate host (pull)\n  ansible.posix.synchronize:\n    mode: pull\n    src: rsync://somehost.com/path/\n    dest: /some/absolute/path/\n  delegate_to: delegate.host\n\n- name: Synchronization without any --archive options enabled\n  ansible.posix.synchronize:\n    src: some/relative/path\n    dest: /some/absolute/path\n    archive: no\n\n- name: Synchronization with --archive options enabled except for --recursive\n  ansible.posix.synchronize:\n    src: some/relative/path\n    dest: /some/absolute/path\n    recursive: no\n\n- name: Synchronization with --archive options enabled except for --times, with --checksum option enabled\n  ansible.posix.synchronize:\n    src: some/relative/path\n    dest: /some/absolute/path\n    checksum: yes\n    times: no\n\n- name: Synchronization without --archive options enabled except use --links\n  ansible.posix.synchronize:\n    src: some/relative/path\n    dest: /some/absolute/path\n    archive: no\n    links: yes\n\n- name: Synchronization of two paths both on the control machine\n  ansible.posix.synchronize:\n    src: some/relative/path\n    dest: /some/absolute/path\n  delegate_to: localhost\n\n- name: Synchronization of src on the inventory host to the dest on the localhost in pull mode\n  ansible.posix.synchronize:\n    mode: pull\n    src: some/relative/path\n    dest: /some/absolute/path\n\n- name: Synchronization of src on delegate host to dest on the current inventory host.\n  ansible.posix.synchronize:\n    src: /first/absolute/path\n    dest: /second/absolute/path\n  delegate_to: delegate.host\n\n- name: Synchronize two directories on one remote host.\n  ansible.posix.synchronize:\n    src: /first/absolute/path\n    dest: /second/absolute/path\n  delegate_to: \"{{ inventory_hostname }}\"\n\n- name: Synchronize and delete files in dest on the remote host that are not found in src of localhost.\n  ansible.posix.synchronize:\n    src: some/relative/path\n    dest: /some/absolute/path\n    delete: yes\n    recursive: yes\n\n# This specific command is granted su privileges on the destination\n- name: Synchronize using an alternate rsync command\n  ansible.posix.synchronize:\n    src: some/relative/path\n    dest: /some/absolute/path\n    rsync_path: su -c rsync\n\n# Example .rsync-filter file in the source directory\n# - var       # exclude any path whose last part is 'var'\n# - /var      # exclude any path starting with 'var' starting at the source directory\n# + /var/conf # include /var/conf even though it was previously excluded\n\n- name: Synchronize passing in extra rsync options\n  ansible.posix.synchronize:\n    src: /tmp/helloworld\n    dest: /var/www/helloworld\n    rsync_opts:\n      - \"--no-motd\"\n      - \"--exclude=.git\"\n\n# Hardlink files if they didn't change\n- name: Use hardlinks when synchronizing filesystems\n  ansible.posix.synchronize:\n    src: /tmp/path_a/foo.txt\n    dest: /tmp/path_b/foo.txt\n    link_dest: /tmp/path_a/\n\n# Specify the rsync binary to use on remote host and on local host\n- hosts: groupofhosts\n  vars:\n    ansible_rsync_path: /usr/gnu/bin/rsync\n\n  tasks:\n    - name: copy /tmp/localpath/ to remote location /tmp/remotepath\n      ansible.posix.synchronize:\n        src: /tmp/localpath/\n        dest: /tmp/remotepath\n        rsync_path: /usr/gnu/bin/rsync\n"
+  },
+  "ansible.posix.sysctl": {
+    "doc": {
+      "description": "This module manipulates sysctl entries and optionally performs a C(/sbin/sysctl -p) after changing them.",
+      "has_action": false,
+      "options": {
+        "ignoreerrors": {
+          "aliases": [],
+          "description": "Use this option to ignore errors about unknown keys.",
+          "default": "no",
+          "type": "bool",
+          "required": false,
+          "suboptions": {}
+        },
+        "name": {
+          "aliases": [
+            "key"
+          ],
+          "description": "The dot-separated path (also known as I(key)) specifying the sysctl variable.",
+          "type": "str",
+          "required": true,
+          "suboptions": {}
+        },
+        "reload": {
+          "aliases": [],
+          "description": "If C(yes), performs a I(/sbin/sysctl -p) if the C(sysctl_file) is updated. If C(no), does not reload I(sysctl) even if the C(sysctl_file) is updated.",
+          "default": "yes",
+          "type": "bool",
+          "required": false,
+          "suboptions": {}
+        },
+        "state": {
+          "aliases": [],
+          "description": "Whether the entry should be present or absent in the sysctl file.",
+          "default": "present",
+          "type": "str",
+          "required": false,
+          "choices": [
+            "present",
+            "absent"
+          ],
+          "suboptions": {}
+        },
+        "sysctl_file": {
+          "aliases": [],
+          "description": "Specifies the absolute path to C(sysctl.conf), if not C(/etc/sysctl.conf).",
+          "default": "/etc/sysctl.conf",
+          "type": "path",
+          "required": false,
+          "suboptions": {}
+        },
+        "sysctl_set": {
+          "aliases": [],
+          "description": "Verify token value with the sysctl command and set with -w if necessary",
+          "default": "no",
+          "type": "bool",
+          "required": false,
+          "suboptions": {}
+        },
+        "value": {
+          "aliases": [
+            "val"
+          ],
+          "description": "Desired value of the sysctl key.",
+          "type": "str",
+          "required": false,
+          "suboptions": {}
+        }
+      },
+      "short_description": "Manage entries in sysctl.conf.",
+      "version_added": "1.0.0"
+    },
+    "examples": "\n# Set vm.swappiness to 5 in /etc/sysctl.conf\n- ansible.posix.sysctl:\n    name: vm.swappiness\n    value: '5'\n    state: present\n\n# Remove kernel.panic entry from /etc/sysctl.conf\n- ansible.posix.sysctl:\n    name: kernel.panic\n    state: absent\n    sysctl_file: /etc/sysctl.conf\n\n# Set kernel.panic to 3 in /tmp/test_sysctl.conf\n- ansible.posix.sysctl:\n    name: kernel.panic\n    value: '3'\n    sysctl_file: /tmp/test_sysctl.conf\n    reload: no\n\n# Set ip forwarding on in /proc and verify token value with the sysctl command\n- ansible.posix.sysctl:\n    name: net.ipv4.ip_forward\n    value: '1'\n    sysctl_set: yes\n\n# Set ip forwarding on in /proc and in the sysctl file and reload if necessary\n- ansible.posix.sysctl:\n    name: net.ipv4.ip_forward\n    value: '1'\n    sysctl_set: yes\n    state: present\n    reload: yes\n"
+  }
+}
