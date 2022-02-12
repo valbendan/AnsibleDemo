@@ -1,0 +1,8 @@
+- hosts: server
+  tasks:
+    - name: this {{ ansible_bios_version }} cool
+      action: ansible.builtin.apt
+
+    - name: debug
+      ansible.builtin.debug:
+        msg: hello
